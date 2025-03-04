@@ -1,7 +1,16 @@
-import React from 'react';
+import React, { useEffect, useContext } from 'react';
 import { MessageSquare, Send, Search, Plus, Clock, User, Settings, ChevronRight, MessageCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { LoginContext } from '../context/LoginContextProvider';
 
 const Chat = () => {
+  const contextVars = useContext(LoginContext) ;
+  const navigate = useNavigate() ;
+
+  useEffect(()=>{
+    (!contextVars.isAuthenticated)? navigate("/login") : "";
+  }) ;
+
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}

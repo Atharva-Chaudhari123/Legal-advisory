@@ -1,17 +1,45 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Scale, Mail, Lock } from 'lucide-react';
+import { LoginContext } from '../context/LoginContextProvider';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passTooltip, setPassTooltip] = useState("") ;
+  const [loginTooltip, setLoginTooltip] = useState("") ; 
+  const contextVars = useContext(LoginContext) ;
+  const navigate = useNavigate() ;
 
   useEffect(()=>{
     ((password.length > 1 && password.length < 8) || password.length<8 || password.length>16 ) ? setPassTooltip("Length of password must between 8-16 characters") : setPassTooltip("") ;
   }, [password])
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    fetch("http://localhost:8000/user/searchuser", {
+      method : "POST", 
+      headers : {
+        "Content-Type": "application/json",
+      },
+      body : JSON.stringify({
+        email :  email ,
+        password :  password
+      })
+
+    })
+    .then((res) =>{
+      return res.json() ;
+    }).then((res)=>{
+      setLoginTooltip(res.message) ;
+      if(res.status==="OK"){
+        contextVars.login({name : res.userName , email :  res.email}) ;
+        console.log(res.userName, res.email)
+        navigate("/home") ;
+      }
+    }).catch((err)=>{
+      setLoginTooltip("Error Fetching user") ;
+    })
     
   };
   
@@ -109,6 +137,7 @@ const Login = () => {
               </button>
             </div>
           </form>
+          <p className='text-green-500 text-xxl mt-3'>{loginTooltip}</p>
         </div>
       </div>
     </div>

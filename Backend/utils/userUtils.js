@@ -6,7 +6,9 @@ const searchUser = async(email, password)=>{
           {email : {$eq : email} }, 
           {password : {$eq : password}}
         ]}) ;
-        return res ? true : false ;
+
+        console.log(res) ;
+        return res!=null ? res : false ;
 }
 
 module.exports = {searchUser} ;

@@ -7,6 +7,9 @@ const cors =require("cors")
 
 app.use(express.json()) ;
 app.use(express.urlencoded({extended : true})) ;
+
+
+//handling cors
 app.use(cors()) ;
 
 //load dotenv
@@ -24,6 +27,7 @@ app.get("/", (req, res)=>{
 }) ;
 
 app.use("/user",router) ;
+app.use("/filter", router)
 
 app.listen(port , (err)=>{
     if(!err){    

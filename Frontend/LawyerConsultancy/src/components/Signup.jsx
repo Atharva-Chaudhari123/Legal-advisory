@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Link, redirect, useNavigate } from 'react-router-dom';
 import { Scale, User, Mail, Lock, Check } from 'lucide-react';
+import { LoginContext } from '../context/LoginContextProvider';
+
 
 const SignUp = () => {
   const [name, setName] = useState('');
@@ -9,6 +11,12 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passTooltip, setPassTooltip] = useState('') ;
   const [nameTooltip, setNameTooltip] = useState("") ;
+  const [responseTooltip, setResponseTooltip] = useState("") ;
+
+  const contextVars = useContext(LoginContext) ;
+  const navigate = useNavigate() ;
+
+
 
   // useEffect(()=>{
   //   if(confirmPassword == password){
@@ -61,9 +69,16 @@ const SignUp = () => {
       })}).then ((res)=> {
         return res.json() ;
       }).then((res)=>{
-        console.log(res.status) ;
+        setResponseTooltip(res.message);
+        if(res.status === "OK"){
+          contextVars.login({name : name, email : email})
+          navigate("/home")
+        }
+
+        
       }).catch((err)=>{
         console.log("Error occurred") ;
+        setResponseTooltip("Error occurred ") ;
       })
 
     
@@ -193,6 +208,7 @@ const SignUp = () => {
             </div>
             
           </form>
+          <p className='text-green-500 text-xxl text-center mt-3'>{responseTooltip}</p>
         </div>
       </div>
     </div>

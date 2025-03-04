@@ -1,9 +1,45 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Search, MapPin, Star, Phone, Mail, Briefcase, Globe, Clock, ChevronDown, Filter } from 'lucide-react';
+import { LoginContext } from '../context/LoginContextProvider';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const Lawyers = () => {
+  const contextVars = useContext(LoginContext);
+  const [lawyers, setLawyerlist] = useState([]);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect( () => {
+    
+    if(!contextVars.isAuthenticated){
+      navigate("/login")
+      return ;
+    }
+    
+    const language = searchParams.get("lang");
+    const specialized_law = searchParams.get("law");
+    const query = `lang=${language}&law=${specialized_law}`
+
+    try {
+      fetch(`http://localhost:8000/filter/getlawyer?${query}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      }).then((res)=>{
+        return res.json() ;
+      }).then((res)=>{
+        setLawyerlist(res) ;
+      })
+
+    } catch (e) {
+      console.log(e);
+    }
+  }, [])
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSpecialization, setSelectedSpecialization] = useState('');
+
 
   const specializations = [
     'All',
@@ -12,24 +48,50 @@ const Lawyers = () => {
     'Family Law',
     'Property Law',
     'Immigration Law',
-    'Employment Law'
+    'Employment Law',
+    'Intellectual Property Law',
+    'Bankruptcy Law',
+    'Tax Law',
+    'Environmental Law',
+    'Medical Malpractice Law',
+    'Personal Injury Law',
+    'Human Rights Law',
+    'International Law',
+    'Cyber Law',
+    'Real Estate Law',
+    'Consumer Protection Law',
+    'Entertainment & Media Law',
+    'Military Law',
+    'Constitutional Law'
   ];
 
-  const lawyers = [
-    {
-      id: 1,
-      name: 'Sarah Johnson',
-      specialization: 'Corporate Law',
-      rating: 4.8,
-      experience: 12,
-      location: 'New York, NY',
-      languages: ['English', 'Spanish'],
-      availableFrom: 'Next Week',
-      consultationFee: '$200',
-      successRate: '95%'
-    },
-    // ... other lawyer data
-  ];
+  // const lawyers = [
+  //   {
+  //     id: 1,
+  //     name: 'Sarah Johnson',
+  //     specialization: 'Corporate Law',
+  //     rating: 4.8,
+  //     experience: 12,
+  //     location: 'New York, NY',
+  //     languages: ['English', 'Spanish'],
+  //     availableFrom: 'Next Week',
+  //     consultationFee: '$200',
+  //     successRate: '95%'
+  //   },
+  //   {
+  //     id: 2,
+  //     name: 'Jasmita kaur',
+  //     specialization: 'Corporate Law',
+  //     rating: 1.1,
+  //     experience: 2,
+  //     location: 'Pune, IND',
+  //     languages: ['English'],
+  //     availableFrom: 'All time',
+  //     consultationFee: '₹200',
+  //     successRate: '35%'
+  //   },
+  //   // ... other lawyer data
+  // ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -41,7 +103,7 @@ const Lawyers = () => {
           <p className="text-xl text-blue-100 max-w-2xl mx-auto">
             Connect with top-rated lawyers specialized in various fields of law
           </p>
-          
+
           {/* Search Bar */}
           <div className="mt-8 max-w-3xl mx-auto">
             <div className="flex flex-col md:flex-row gap-4 bg-white p-2 rounded-xl shadow-lg">
@@ -55,7 +117,7 @@ const Lawyers = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              
+
               <div className="md:w-64">
                 <div className="relative">
                   <select
@@ -90,7 +152,7 @@ const Lawyers = () => {
               Location ▾
             </button>
           </div>
-          <span className="text-sm text-gray-500">Showing 12 lawyers</span>
+          <span className="text-sm text-gray-500">Showing {lawyers.length} lawyers</span>
         </div>
       </div>
 
@@ -104,7 +166,7 @@ const Lawyers = () => {
                 <div className="flex items-center space-x-4">
                   <div className="h-20 w-20 bg-gradient-to-br from-blue-100 to-blue-50 rounded-xl flex items-center justify-center">
                     <span className="text-2xl font-bold text-blue-600">
-                      {lawyer.name.charAt(0)}
+                      {lawyer.name[0]}
                     </span>
                   </div>
                   <div>
@@ -138,15 +200,15 @@ const Lawyers = () => {
                     <Star className="h-5 w-5 mr-2 text-yellow-400" />
                     <span className="font-medium">{lawyer.rating}</span>
                     <span className="mx-1">•</span>
-                    <span className="text-gray-500">184 reviews</span>
+                    <span className="text-gray-500">{Math.ceil( Math.random() * 100)} Reviews</span>
                   </div>
                   <div className="flex items-center text-gray-600">
                     <Globe className="h-5 w-5 mr-2 text-gray-400" />
-                    {lawyer.languages.join(', ')}
+                    {lawyer.languages}
                   </div>
                   <div className="flex items-center text-gray-600">
                     <Clock className="h-5 w-5 mr-2 text-gray-400" />
-                    Available from {lawyer.availableFrom}
+                    Available
                   </div>
                 </div>
 
