@@ -27,7 +27,8 @@ app.get("/", (req, res)=>{
 }) ;
 
 app.use("/user",router) ;
-app.use("/filter", router)
+app.use("/filter", router) ;
+app.use("/incoming", router)
 
 app.listen(port , (err)=>{
     if(!err){    

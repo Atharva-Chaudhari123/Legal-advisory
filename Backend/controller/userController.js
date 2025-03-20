@@ -1,6 +1,7 @@
 const { model } = require("../model/userModel");
 const {searchUser } = require("../utils/userUtils") ;
 const { lawyerModel } = require("../model/lawyerModel") ;
+const {callAPI} = require("../utils/agent")
 
 
 const handleCreateUser = async (req, res) => {
@@ -70,6 +71,30 @@ const handleGetFilteredLawyers = async(req, res) =>{
     }
 }
 
+const handleIncomingUserPrompt = async (req, res) =>{
+    try
+    {
+        prompt = req.body.prompt ;
+        resp = await callAPI(prompt)
+
+        // console.log(resp) ; 
+
+        if(resp){
+            return res.json(
+            {
+                status : "ok" ,
+                answer : resp ,
+            }) ;
+        }
+        throw new Error("Error occurred") ;
+
+    }catch (e) {
+        return res.json({
+            status : "BAD" ,
+            message :  "Error fetching result"
+        })
+    }
+}
 
 
-module.exports = {handleCreateUser, handleSearchUser, handleGetFilteredLawyers} ;
+module.exports = {handleCreateUser, handleSearchUser, handleGetFilteredLawyers , handleIncomingUserPrompt} ;

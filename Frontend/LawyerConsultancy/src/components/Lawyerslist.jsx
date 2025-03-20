@@ -39,7 +39,7 @@ const Lawyers = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSpecialization, setSelectedSpecialization] = useState('');
-
+  
 
   const specializations = [
     'All',
@@ -115,6 +115,7 @@ const Lawyers = () => {
                   placeholder="Search by name or specialization..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  
                 />
               </div>
 
